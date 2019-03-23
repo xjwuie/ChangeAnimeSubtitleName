@@ -144,17 +144,19 @@ namespace ChangeSubtitleName
             int index = 0, cutLength = 0;
             CustomFileInfo file0 = subFiles[0];
             string fileName = file0.lowerName;
+            //Console.WriteLine(fileName);
             int num = fileName.Length;
             Regex regex;
             Match match;
 
-            while (index == 0)
+            int tmpI = 0;
+            while (tmpI++ < 5)
             {
-                regex = new Regex(@"(ova|sp|extra|oad)?(\s)*?(\d+)|(ova|sp|extra|oad)");
+                regex = new Regex(@"(((ova|sp|extra|oad)(\s*))?(\d+))|(ova|sp|extra|oad)");
                 match = regex.Match(fileName);
                 
                 string tmp = match.Groups[0].ToString();
-                //Console.WriteLine(tmp);
+                Console.WriteLine(tmp);
                 if (tmp.Length == 0)
                 {
                     return false;
@@ -176,22 +178,24 @@ namespace ChangeSubtitleName
             
             foreach(CustomFileInfo file in subFiles)
             {
-                fileName = file.lowerName.Substring(cutLength);
+                fileName = file.lowerName.Substring(index);
                 //Console.WriteLine(fileName);
-                regex = new Regex(@"(ova|sp|extra|oad)?(\s*?)(\d+)|(ova|sp|extra|oad)");
+                regex = new Regex(@"(((ova|sp|extra|oad)(\s*))?(\d+))|(ova|sp|extra|oad)");
                 match = regex.Match(fileName);
                 
+
                 string matchStr, numStr, frontStr;
                 matchStr = match.Groups[0].ToString();
-                if (matchStr == "" || fileName.IndexOf(matchStr) != index)
+                if (matchStr == "" || file.lowerName.IndexOf(matchStr) != index)
                 {
                     unknownSubFiles.Add(file);
+                    //Console.WriteLine
                     //Console.WriteLine(matchStr);
                     Console.WriteLine("unknown: " + file.fileName);
                     continue;
                 }
-                numStr = match.Groups[3].ToString();
-                frontStr = match.Groups[1].ToString() != "" ? match.Groups[1].ToString() : match.Groups[4].ToString();
+                numStr = match.Groups[5].ToString();
+                frontStr = match.Groups[6].ToString() == "" ? match.Groups[3].ToString() : match.Groups[6].ToString();
                 //Console.WriteLine(matchStr);
                 if(frontStr == "")
                 {
@@ -243,7 +247,7 @@ namespace ChangeSubtitleName
 
         bool CheckSubPattern(int index) {
             int count = 0, i = 0, num = subFiles.Count;
-            char ch = subFiles[i++].lowerName[index];
+            char ch = subFiles[i].lowerName[index];
             while(i < num)
             {
                 if (ch == subFiles[i++].lowerName[index])
@@ -252,6 +256,7 @@ namespace ChangeSubtitleName
                 }
                 
             }
+            //Console.WriteLine(count);
             if (count == num)
             {
                 return false;
@@ -317,7 +322,7 @@ namespace ChangeSubtitleName
                 while(index < num)
                 {
                     //bool flag = false;
-                    Regex reg = new Regex(@"(ova|sp|extra|oad)?(\s*?)(\d+)|(ova|sp|extra|oad)");
+                    Regex reg = new Regex(@"(((ova|sp|extra|oad)(\s*))?(\d+))|(ova|sp|extra|oad)");
                     Match match = reg.Match(fileName);
                     string matchStr = match.Groups[0].ToString();
                     if(matchStr == "")
@@ -347,7 +352,7 @@ namespace ChangeSubtitleName
                 {
                     foreach(CustomFileInfo f in tmpVideoFiles)
                     {
-                        Regex reg = new Regex(@"(ova|sp|extra|oad)?(\s*?)(\d+)|(ova|sp|extra|oad)");
+                        Regex reg = new Regex(@"(((ova|sp|extra|oad)(\s*))?(\d+))|(ova|sp|extra|oad)");
                         Match match = reg.Match(f.lowerName);
                         string matchStr = match.Groups[0].ToString();
                         if (matchStr == "")
@@ -375,6 +380,7 @@ namespace ChangeSubtitleName
 
         void PrepareNames() {
             newSubNames = new List<string>();
+            Console.WriteLine("subFiles num: {0}", subFiles.Count);
             foreach(CustomFileInfo file in subFiles)
             {
                 if (!file.isNormal)
