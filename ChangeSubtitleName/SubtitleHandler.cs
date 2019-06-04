@@ -23,10 +23,11 @@ namespace ChangeSubtitleName
         public CustomFileInfo(FileInfo info) {
             fileInfo = info;
             fileName = info.Name;
-            fileName = fileName.Substring(0, fileName.IndexOf("."));
-            //fileName = fileName.Substring(0, fileName.Length - info.Extension.Length);
+            //fileName = fileName.Substring(0, fileName.IndexOf("."));
+            fileName = fileName.Substring(0, fileName.Length - info.Extension.Length);
             lowerName = fileName.ToLower();
-            extName = info.Name.Substring(info.Name.IndexOf("."));
+            //extName = info.Name.Substring(info.Name.IndexOf("."));
+            extName = info.Name.Substring(fileName.Length);
         }
     }
 
